@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, Heart, Menu, X } from "lucide-react";
+import { ShoppingCart, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import logo from "@/assets/logo.png";
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { cartCount, setIsCartOpen, wishlist } = useCart();
+  const { cartCount, setIsCartOpen } = useCart();
   const location = useLocation();
 
   const links = [
@@ -38,14 +38,6 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-4">
-          <button className="relative p-2 transition-colors hover:text-primary">
-            <Heart className="w-5 h-5" />
-            {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center font-bold">
-                {wishlist.length}
-              </span>
-            )}
-          </button>
           <button onClick={() => setIsCartOpen(true)} className="relative p-2 transition-colors hover:text-primary">
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (

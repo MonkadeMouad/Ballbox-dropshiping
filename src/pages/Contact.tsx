@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, MapPin, Phone, Send } from "lucide-react";
+import { MapPin, Phone, Send, Instagram, Facebook } from "lucide-react";
 import { toast } from "sonner";
 
 const Contact = () => {
@@ -57,21 +57,39 @@ const Contact = () => {
           <div>
             <h2 className="font-display text-2xl font-bold mb-6">NOS COORDONNÉES</h2>
             <div className="space-y-4">
-              {[
-                { icon: Mail,    text: "mrballbox@gmail.com" },
-                { icon: Phone,   text: "+212 652744953" },
-                { icon: MapPin,  text: "El Jadida, Maroc" },
-              ].map(({ icon: Icon, text }) => (
-                <div key={text} className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
-                  <div className="p-3 bg-muted rounded-lg shrink-0">
-                    <Icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <span className="text-sm font-medium">{text}</span>
+              <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
+                <div className="p-3 bg-muted rounded-lg shrink-0">
+                  <Phone className="w-5 h-5 text-primary" />
                 </div>
-              ))}
+                <span className="text-sm font-medium">+212 699832884</span>
+              </div>
+              <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
+                <div className="p-3 bg-muted rounded-lg shrink-0">
+                  <MapPin className="w-5 h-5 text-primary" />
+                </div>
+                <span className="text-sm font-medium">El Jadida, Maroc</span>
+              </div>
+              <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
+                <div className="p-3 bg-muted rounded-lg shrink-0">
+                  <Instagram className="w-5 h-5 text-primary" />
+                </div>
+                <a href="https://www.instagram.com/ballbox.shop7.13?igsh=MXkyYWtjMG1xZnppNw=="
+                  target="_blank" rel="noopener noreferrer"
+                  className="text-sm font-medium hover:text-primary transition-colors">
+                  @ballbox.shop7.13
+                </a>
+              </div>
+              <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
+                <div className="p-3 bg-muted rounded-lg shrink-0">
+                  <Facebook className="w-5 h-5 text-primary" />
+                </div>
+                <a href="https://www.facebook.com/share/17rE2s9fSf/"
+                  target="_blank" rel="noopener noreferrer"
+                  className="text-sm font-medium hover:text-primary transition-colors">
+                  BallBox
+                </a>
+              </div>
             </div>
-
-
           </div>
 
         </div>

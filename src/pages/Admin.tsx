@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Pencil, X, Save, ShieldAlert, Package, ChevronDown, ChevronUp, Eye, EyeOff, Star, MessageSquare, KeyRound } from "lucide-react";
+import { Plus, Trash2, Pencil, X, Save, ShieldAlert, Package, ChevronDown, ChevronUp, Eye, EyeOff, Star, MessageSquare, KeyRound, Phone, MapPin, Instagram, Facebook } from "lucide-react";
 import { products as defaultProducts } from "@/data/products";
 import { getAllImageKeys } from "@/lib/productImages";
 
@@ -41,6 +41,28 @@ const PRODUCTS_KEY  = "hoopzone_products";
 const REVIEWS_KEY   = "hoopzone_reviews";
 const PASSWORD_KEY  = "hoopzone_admin_pw";
 const LOCKOUT_KEY   = "hoopzone_lockout";
+const CONTACT_KEY   = "hoopzone_contact";
+
+interface ContactInfo {
+  phone: string;
+  address: string;
+  instagram: string;
+  facebook: string;
+}
+
+const DEFAULT_CONTACT: ContactInfo = {
+  phone:     "+212 699832884",
+  address:   "El Jadida, Maroc",
+  instagram: "https://www.instagram.com/ballbox.shop7.13?igsh=MXkyYWtjMG1xZnppNw==",
+  facebook:  "https://www.facebook.com/share/17rE2s9fSf/",
+};
+
+export function getContactInfo(): ContactInfo {
+  try {
+    const raw = localStorage.getItem(CONTACT_KEY);
+    return raw ? { ...DEFAULT_CONTACT, ...JSON.parse(raw) } : DEFAULT_CONTACT;
+  } catch { return DEFAULT_CONTACT; }
+}
 
 const DEFAULT_PASSWORD = "BallBox2026!";
 const LOCKOUT_SECONDS  = 30;
@@ -200,7 +222,7 @@ const Admin = () => {
   const [showPw, setShowPw]           = useState(false);
   const [pwError, setPwError]         = useState("");
   const [lockoutLeft, setLockoutLeft] = useState(0);
-  const [tab, setTab]                 = useState<"products" | "reviews" | "security">("products");
+  const [tab, setTab] = useState<"products" | "reviews" | "security" | "contact">("products");
 
   // Change password state
   const [oldPw, setOldPw]             = useState("");
@@ -224,6 +246,10 @@ const Admin = () => {
   const [reviewDeleteConfirm, setReviewDeleteConfirm] = useState<string | null>(null);
 
   const [saved, setSaved]             = useState(false);
+
+  // Contact info state
+  const [contactInfo, setContactInfo] = useState<ContactInfo>(getContactInfo);
+  const [contactSaved, setContactSaved] = useState(false);
 
   useEffect(() => { saveProducts(products); }, [products]);
   useEffect(() => { saveReviews(reviews); }, [reviews]);
@@ -400,6 +426,10 @@ const Admin = () => {
           <button onClick={() => setTab("security")}
             className={`flex items-center gap-2 px-5 py-3 font-display text-sm tracking-widest uppercase transition-all border-b-2 -mb-px ${tab === "security" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
             <KeyRound className="w-4 h-4" /> Sécurité
+          </button>
+          <button onClick={() => setTab("contact")}
+            className={`flex items-center gap-2 px-5 py-3 font-display text-sm tracking-widest uppercase transition-all border-b-2 -mb-px ${tab === "contact" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+            <Phone className="w-4 h-4" /> Contact
           </button>
         </div>
 
@@ -610,6 +640,53 @@ const Admin = () => {
               <button onClick={() => { clearLockout(); notify(); }}
                 className="px-4 py-2 bg-destructive text-white text-xs font-display tracking-widest uppercase rounded-lg hover:opacity-90 transition-all">
                 Débloquer l'accès
+              </button>
+            </div>
+          </div>
+        )}
+        {/* ── TAB CONTACT ── */}
+        {tab === "contact" && (
+          <div className="max-w-md">
+            <h2 className="font-display text-xl font-bold tracking-wider mb-6">INFORMATIONS DE CONTACT</h2>
+            <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+              <div>
+                <label className="label flex items-center gap-2"><Phone className="w-3 h-3" /> Téléphone</label>
+                <input value={contactInfo.phone}
+                  onChange={(e) => setContactInfo({ ...contactInfo, phone: e.target.value })}
+                  placeholder="+212 6XXXXXXXX" className="field" />
+              </div>
+              <div>
+                <label className="label flex items-center gap-2"><MapPin className="w-3 h-3" /> Adresse</label>
+                <input value={contactInfo.address}
+                  onChange={(e) => setContactInfo({ ...contactInfo, address: e.target.value })}
+                  placeholder="El Jadida, Maroc" className="field" />
+              </div>
+              <div>
+                <label className="label flex items-center gap-2"><Instagram className="w-3 h-3" /> Lien Instagram</label>
+                <input value={contactInfo.instagram}
+                  onChange={(e) => setContactInfo({ ...contactInfo, instagram: e.target.value })}
+                  placeholder="https://www.instagram.com/..." className="field" />
+              </div>
+              <div>
+                <label className="label flex items-center gap-2"><Facebook className="w-3 h-3" /> Lien Facebook</label>
+                <input value={contactInfo.facebook}
+                  onChange={(e) => setContactInfo({ ...contactInfo, facebook: e.target.value })}
+                  placeholder="https://www.facebook.com/..." className="field" />
+              </div>
+
+              {contactSaved && (
+                <p className="text-sm text-primary bg-primary/10 border border-primary/30 rounded-lg px-4 py-3">
+                  ✅ Informations sauvegardées !
+                </p>
+              )}
+
+              <button onClick={() => {
+                localStorage.setItem(CONTACT_KEY, JSON.stringify(contactInfo));
+                setContactSaved(true);
+                setTimeout(() => setContactSaved(false), 3000);
+              }}
+                className="w-full py-3 bg-primary text-primary-foreground font-display font-bold tracking-widest uppercase rounded-lg hover:glow-primary transition-all">
+                <Save className="w-4 h-4 inline mr-2" /> Sauvegarder
               </button>
             </div>
           </div>

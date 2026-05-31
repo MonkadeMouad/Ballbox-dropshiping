@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { MapPin, Phone, Send, Instagram, Facebook } from "lucide-react";
 import { toast } from "sonner";
+import { getContactInfo } from "./Admin";
 
 const Contact = () => {
+  const info = getContactInfo();
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     toast.success("Message envoyé ! Nous vous répondrons dans les 24h.");
@@ -27,27 +30,17 @@ const Contact = () => {
             <h2 className="font-display text-2xl font-bold mb-6">ENVOYER UN MESSAGE</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  required name="name" placeholder="Votre nom"
-                  className="w-full px-4 py-3 bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                />
-                <input
-                  required name="email" type="email" placeholder="Adresse email"
-                  className="w-full px-4 py-3 bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                />
+                <input required name="name" placeholder="Votre nom"
+                  className="w-full px-4 py-3 bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm" />
+                <input required name="email" type="email" placeholder="Adresse email"
+                  className="w-full px-4 py-3 bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm" />
               </div>
-              <input
-                required name="subject" placeholder="Sujet"
-                className="w-full px-4 py-3 bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-              />
-              <textarea
-                required name="message" rows={5} placeholder="Votre message..."
-                className="w-full px-4 py-3 bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none"
-              />
-              <button
-                type="submit"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-display font-bold tracking-widest uppercase rounded-lg transition-all hover:glow-primary hover:scale-105"
-              >
+              <input required name="subject" placeholder="Sujet"
+                className="w-full px-4 py-3 bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm" />
+              <textarea required name="message" rows={5} placeholder="Votre message..."
+                className="w-full px-4 py-3 bg-muted border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none" />
+              <button type="submit"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-display font-bold tracking-widest uppercase rounded-lg transition-all hover:glow-primary hover:scale-105">
                 <Send className="w-4 h-4" /> Envoyer
               </button>
             </form>
@@ -61,34 +54,36 @@ const Contact = () => {
                 <div className="p-3 bg-muted rounded-lg shrink-0">
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-sm font-medium">+212 699832884</span>
+                <span className="text-sm font-medium">{info.phone}</span>
               </div>
               <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
                 <div className="p-3 bg-muted rounded-lg shrink-0">
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
-                <span className="text-sm font-medium">El Jadida, Maroc</span>
+                <span className="text-sm font-medium">{info.address}</span>
               </div>
-              <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
-                <div className="p-3 bg-muted rounded-lg shrink-0">
-                  <Instagram className="w-5 h-5 text-primary" />
+              {info.instagram && (
+                <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
+                  <div className="p-3 bg-muted rounded-lg shrink-0">
+                    <Instagram className="w-5 h-5 text-primary" />
+                  </div>
+                  <a href={info.instagram} target="_blank" rel="noopener noreferrer"
+                    className="text-sm font-medium hover:text-primary transition-colors">
+                    @ballbox.shop7.13
+                  </a>
                 </div>
-                <a href="https://www.instagram.com/ballbox.shop7.13?igsh=MXkyYWtjMG1xZnppNw=="
-                  target="_blank" rel="noopener noreferrer"
-                  className="text-sm font-medium hover:text-primary transition-colors">
-                  @ballbox.shop7.13
-                </a>
-              </div>
-              <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
-                <div className="p-3 bg-muted rounded-lg shrink-0">
-                  <Facebook className="w-5 h-5 text-primary" />
+              )}
+              {info.facebook && (
+                <div className="flex items-center gap-4 bg-card border border-border rounded-xl p-4">
+                  <div className="p-3 bg-muted rounded-lg shrink-0">
+                    <Facebook className="w-5 h-5 text-primary" />
+                  </div>
+                  <a href={info.facebook} target="_blank" rel="noopener noreferrer"
+                    className="text-sm font-medium hover:text-primary transition-colors">
+                    BallBox
+                  </a>
                 </div>
-                <a href="https://www.facebook.com/share/17rE2s9fSf/"
-                  target="_blank" rel="noopener noreferrer"
-                  className="text-sm font-medium hover:text-primary transition-colors">
-                  BallBox
-                </a>
-              </div>
+              )}
             </div>
           </div>
 

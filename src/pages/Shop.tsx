@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { Search, X } from "lucide-react";
 import ProductCard from "@/components/ProductCard";
 import { defaultProducts } from "@/data/products";
 
@@ -18,6 +19,7 @@ type SortOption = "popular" | "price-asc" | "price-desc" | "newest";
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [sort, setSort] = useState<SortOption>("popular");
+  const [search, setSearch] = useState("");
 
   const categoryParam = searchParams.get("cat") || "all";
 
@@ -31,6 +33,17 @@ const Shop = () => {
   const filtered = useMemo(() => {
     const products = loadVisibleProducts();
     let result = categoryParam === "all" ? [...products] : products.filter((p: any) => p.category === categoryParam);
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter((p: any) =>
+        p.name.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.subcategory?.toLowerCase().includes(q)
+      );
+    }
+
     switch (sort) {
       case "price-asc":  result.sort((a: any, b: any) => a.price - b.price); break;
       case "price-desc": result.sort((a: any, b: any) => b.price - a.price); break;
@@ -38,7 +51,7 @@ const Shop = () => {
       default:           result.sort((a: any, b: any) => b.reviews - a.reviews);
     }
     return result;
-  }, [categoryParam, sort]);
+  }, [categoryParam, sort, search]);
 
   return (
     <main className="pt-20 md:pt-24 min-h-screen">
@@ -50,7 +63,26 @@ const Shop = () => {
       </div>
 
       <div className="container py-8">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        {/* Barre de recherche */}
+        <div className="relative mb-6">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Rechercher un produit..."
+            className="w-full bg-muted border border-border rounded-xl pl-11 pr-10 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+          {search && (
+            <button onClick={() => setSearch("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Filtres */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-2 flex-wrap">
             {categories.map((cat) => (
               <button key={cat.value}
@@ -77,7 +109,10 @@ const Shop = () => {
           </select>
         </div>
 
-        <p className="text-sm text-muted-foreground mb-6">{filtered.length} produit{filtered.length > 1 ? "s" : ""}</p>
+        <p className="text-sm text-muted-foreground mb-6">
+          {filtered.length} produit{filtered.length > 1 ? "s" : ""}
+          {search && <span> pour "<span className="text-primary">{search}</span>"</span>}
+        </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filtered.map((p: any, i: number) => (
@@ -87,7 +122,14 @@ const Shop = () => {
 
         {filtered.length === 0 && (
           <div className="text-center py-20">
-            <p className="text-muted-foreground text-lg">Aucun produit trouvé</p>
+            <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-muted-foreground text-lg mb-2">Aucun produit trouvé</p>
+            {search && (
+              <button onClick={() => setSearch("")}
+                className="text-primary text-sm hover:underline">
+                Effacer la recherche
+              </button>
+            )}
           </div>
         )}
       </div>
